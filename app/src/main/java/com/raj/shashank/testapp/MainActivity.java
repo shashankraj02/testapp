@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
                 mBuilder.setContentIntent(resultPendingIntent);
 
                 NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                mNotificationManager.notify(10, mBuilder.build());
 
 
             }
