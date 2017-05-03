@@ -1,5 +1,8 @@
 package com.raj.shashank.testapp;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -7,8 +10,11 @@ import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.NotificationCompat;
 import android.util.Log;
+import android.view.View;
 import android.webkit.WebView;
+import android.widget.Button;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
@@ -17,35 +23,34 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        BroadcastReceiver yourReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
+        Button b1;
+        b1 = (Button) findViewById(R.id.b1);
+
+        b1.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // Perform action on click
+
+                NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext());
+                mBuilder.setSmallIcon(R.drawable.notification_icon);
+                mBuilder.setContentTitle("Notification Alert, Click Me!");
+                mBuilder.setContentText("Hi, This is Android Notification Detail!");
+
+                Intent resultIntent = new Intent(getApplicationContext(), MainActivity.class);
+                TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
+                stackBuilder.addParentStack(MainActivity.class);
+
+                // Adds the Intent that starts the Activity to the top of the stack
+                stackBuilder.addNextIntent(resultIntent);
+                PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+                mBuilder.setContentIntent(resultPendingIntent);
+
+                NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
 
             }
-        };
-        final IntentFilter filters = new IntentFilter();
-        filters.addAction("android.net.wifi.WIFI_STATE_CHANGED");
-        filters.addAction("android.net.wifi.STATE_CHANGE");
-        super.registerReceiver(yourReceiver, filters);
 
-        ConnectivityManager conMngr = (ConnectivityManager)this.getSystemService(this.CONNECTIVITY_SERVICE);
-        android.net.NetworkInfo wifi = conMngr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-        android.net.NetworkInfo mobile = conMngr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
 
-        boolean isConnected = wifi != null && wifi.isConnectedOrConnecting() ||
-                mobile != null && mobile.isConnectedOrConnecting();
-        if (isConnected) {
-            Toast.makeText(MainActivity.this,
-                    "YES : Network Available", Toast.LENGTH_LONG).show();
-            //Log.d("Network Available ", "YES");
-        } else {
-            Toast.makeText(MainActivity.this,
-                    "NO : Network Available", Toast.LENGTH_LONG).show();
-            //Log.d("Network Available ", "NO");
-        }
+        });       //WebView browser = (WebView) findViewById(R.id.webview);
 
-        //WebView browser = (WebView) findViewById(R.id.webview);
-
-        //browser.loadUrl("http://www.google.com");
-    }
+    }       //browser.loadUrl("http://www.google.com");
 }
